@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Trash2, Search, Star, Home, Image as ImageIcon } from 'lucide-react';
+import { Plus, Trash2, Search, Star, Home, Image as ImageIcon, Edit2 } from 'lucide-react';
 
 const CategoriesAdmin = () => {
   const [categories, setCategories] = useState([]);
@@ -138,8 +138,11 @@ const CategoriesAdmin = () => {
                         <Home className="w-5 h-5" fill={cat.showOnHome ? "currentColor" : "none"} />
                       </button>
                     </td>
-                    <td className="p-4 flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity mt-2">
-                      <button onClick={() => deleteCategory(cat.id)} className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                    <td className="p-4 flex items-center justify-end gap-2 transition-opacity mt-2">
+                      <Link to={`/categories/edit/${cat.id}`} className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit Category">
+                        <Edit2 className="w-4 h-4" />
+                      </Link>
+                      <button onClick={() => deleteCategory(cat.id)} className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete Category">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </td>

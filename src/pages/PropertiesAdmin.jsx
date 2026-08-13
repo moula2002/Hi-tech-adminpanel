@@ -147,8 +147,19 @@ const PropertiesAdmin = () => {
                       </button>
                     </td>
                     <td className="p-4">
-                      <p className="font-medium text-slate-800">{prop.title}</p>
-                      <p className="text-xs text-slate-500 truncate w-32">ID: {prop.id}</p>
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0 border border-slate-200">
+                          {prop.images?.featured ? (
+                            <img src={prop.images.featured} alt={prop.title} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-slate-400 text-[10px]">No img</div>
+                          )}
+                        </div>
+                        <div>
+                          <p className="font-medium text-slate-800 line-clamp-1" title={prop.title}>{prop.title}</p>
+                          <p className="text-xs text-slate-500 truncate w-32">ID: {prop.id}</p>
+                        </div>
+                      </div>
                     </td>
                     <td className="p-4 text-slate-600 text-sm">{prop.type}</td>
                     <td className="p-4 text-slate-600 text-sm">{prop.purpose || 'N/A'}</td>
@@ -194,8 +205,11 @@ const PropertiesAdmin = () => {
                         <option value="Rented">Rented</option>
                       </select>
                     </td>
-                    <td className="p-4 flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button onClick={() => deleteProperty(prop.id)} className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                    <td className="p-4 flex items-center justify-end gap-2 transition-opacity">
+                      <Link to={`/properties/edit/${prop.id}`} className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit Property">
+                        <Edit2 className="w-4 h-4" />
+                      </Link>
+                      <button onClick={() => deleteProperty(prop.id)} className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete Property">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </td>

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Save, MapPin, Building, Image as ImageIcon, AlignLeft, Info, Settings, Search, CheckSquare, Users } from 'lucide-react';
 
 const AddProperty = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -31,6 +32,39 @@ const AddProperty = () => {
 
   // Auto-generate slug when title changes, if slug is not manually edited
   const [slugEdited, setSlugEdited] = useState(false);
+  
+  useEffect(() => {
+    if (id) {
+      setLoading(true);
+      fetch(`https://hi-techserver.onrender.com/api/properties/${id}`)
+        .then(res => res.json())
+        .then(data => {
+          setFormData({
+            title: data.title || '',
+            slug: data.slug || '',
+            type: data.type || '',
+            purpose: data.purpose || 'Sale',
+            status: data.status || 'Available',
+            pricing: data.pricing || { price: '', offerPrice: '', pricePerSqFt: '', maintenanceCharges: '' },
+            location: data.location || { state: '', city: '', area: '', fullAddress: '', pincode: '', googleMapLink: '' },
+            specifications: data.specifications || { totalArea: '', builtUpArea: '', bedrooms: '', bathrooms: '', balconies: '', floors: '', parkingSpaces: '', facing: '' },
+            amenities: data.amenities || [],
+            images: { featured: null, gallery: [], videoUrl: data.images?.videoUrl || '' },
+            description: data.description || { short: '', full: '' },
+            highlights: data.highlights || { readyToMove: false, newLaunch: false, premiumProperty: false, featuredProperty: false, hotProperty: false },
+            agent: data.agent || { name: '', mobile: '', email: '' },
+            seo: data.seo || { metaTitle: '', metaDescription: '', metaKeywords: '' }
+          });
+          setSlugEdited(true);
+          setLoading(false);
+        })
+        .catch(err => {
+          console.error(err);
+          setErrorMsg('Failed to fetch property details.');
+          setLoading(false);
+        });
+    }
+  }, [id]);
   
   useEffect(() => {
     if (!slugEdited && formData.title) {
@@ -76,7 +110,7 @@ const AddProperty = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.title || !formData.type || !formData.purpose || !formData.status || !formData.pricing.price || !formData.location.state || !formData.location.city || !formData.location.area || !formData.location.fullAddress || !formData.images.featured || !formData.description.short || !formData.description.full) {
+    if (!formData.title || !formData.type || !formData.purpose || !formData.status || !formData.pricing.price || !formData.location.state || !formData.location.city || !formData.location.area || !formData.location.fullAddress || !formData.description.short || !formData.description.full || (!id && !formData.images.featured)) {
       setErrorMsg('Please fill out all required (*) fields.');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
@@ -101,8 +135,10 @@ const AddProperty = () => {
         });
       }
 
-      const res = await fetch('https://hi-techserver.onrender.com/api/properties', {
-        method: 'POST',
+      const url = id ? `https://hi-techserver.onrender.com/api/properties/${id}` : 'https://hi-techserver.onrender.com/api/properties';
+      const method = id ? 'PUT' : 'POST';
+      const res = await fetch(url, {
+        method: method,
         body: formDataToSend
       });
 
@@ -132,8 +168,8 @@ const AddProperty = () => {
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Add New Property</h1>
-          <p className="text-slate-500 mt-1">Complete the details below to list a new property.</p>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">{id ? 'Edit Property' : 'Add New Property'}</h1>
+          <p className="text-slate-500 mt-1">{id ? 'Update the details below.' : 'Complete the details below to list a new property.'}</p>
         </div>
       </div>
 
@@ -314,7 +350,7 @@ const AddProperty = () => {
           </h2>
           <div className="space-y-6">
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700">Featured Image (Upload) *</label>
+              <label className="text-sm font-semibold text-slate-700">Featured Image (Upload) {id ? '(Optional - Leave empty to keep existing)' : '*'}</label>
               <input type="file" accept="image/*" onChange={(e) => handleNestedChange('images', 'featured', e.target.files[0])} className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
             </div>
             <div className="space-y-2">
@@ -431,7 +467,7 @@ const AddProperty = () => {
             className="px-8 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl hover:-translate-y-0.5 flex items-center gap-2 transition-all disabled:opacity-70 disabled:hover:translate-y-0"
           >
             <Save className="w-5 h-5" />
-            {loading ? 'Saving Property...' : 'Save Property'}
+            {loading ? (id ? 'Updating Property...' : 'Saving Property...') : (id ? 'Update Property' : 'Save Property')}
           </button>
         </div>
       </form>

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Save, Info, Image as ImageIcon, Settings, Search, CheckSquare } from 'lucide-react';
 
 const AddCategory = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -22,6 +23,34 @@ const AddCategory = () => {
   const [slugEdited, setSlugEdited] = useState(false);
   
   useEffect(() => {
+    if (id) {
+      setLoading(true);
+      fetch(`https://hi-techserver.onrender.com/api/categories/${id}`)
+        .then(res => res.json())
+        .then(data => {
+          setFormData({
+            name: data.name || '',
+            slug: data.slug || '',
+            image: null,
+            icon: null,
+            description: data.description || '',
+            shortDescription: data.shortDescription || '',
+            showOnHome: data.showOnHome || false,
+            featured: data.featured || false,
+            seo: data.seo || { metaTitle: '', metaDescription: '' }
+          });
+          setSlugEdited(true);
+          setLoading(false);
+        })
+        .catch(err => {
+          console.error(err);
+          setErrorMsg('Failed to fetch category details.');
+          setLoading(false);
+        });
+    }
+  }, [id]);
+
+  useEffect(() => {
     if (!slugEdited && formData.name) {
       const generatedSlug = formData.name
         .toLowerCase()
@@ -33,7 +62,7 @@ const AddCategory = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.image) {
+    if (!formData.name || (!id && !formData.image)) {
       setErrorMsg('Please fill out all required (*) fields.');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
@@ -55,8 +84,10 @@ const AddCategory = () => {
       if (formData.image) formDataToSend.append('image', formData.image);
       if (formData.icon) formDataToSend.append('icon', formData.icon);
 
-      const res = await fetch('https://hi-techserver.onrender.com/api/categories', {
-        method: 'POST',
+      const url = id ? `https://hi-techserver.onrender.com/api/categories/${id}` : 'https://hi-techserver.onrender.com/api/categories';
+      const method = id ? 'PUT' : 'POST';
+      const res = await fetch(url, {
+        method: method,
         body: formDataToSend // Let browser set multipart/form-data headers automatically
       });
 
@@ -86,8 +117,8 @@ const AddCategory = () => {
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Add New Category</h1>
-          <p className="text-slate-500 mt-1">Create a new property category (e.g., Villas, Apartments).</p>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">{id ? 'Edit Category' : 'Add New Category'}</h1>
+          <p className="text-slate-500 mt-1">{id ? 'Update the details below.' : 'Create a new property category (e.g., Villas, Apartments).'}</p>
         </div>
       </div>
 
@@ -114,7 +145,7 @@ const AddCategory = () => {
               <input type="text" value={formData.slug} onChange={(e) => { setFormData({...formData, slug: e.target.value}); setSlugEdited(true); }} placeholder="villas, apartments" className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 transition-all text-slate-500" />
             </div>
             <div className="space-y-2 col-span-1 md:col-span-2">
-              <label className="text-sm font-semibold text-slate-700">Category Image (Upload) *</label>
+              <label className="text-sm font-semibold text-slate-700">Category Image (Upload) {id ? '(Optional - Leave empty to keep existing)' : '*'}</label>
               <input type="file" accept="image/*" onChange={(e) => setFormData({...formData, image: e.target.files[0]})} className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
             </div>
             <div className="space-y-2 col-span-1 md:col-span-2">
@@ -181,7 +212,7 @@ const AddCategory = () => {
             className="px-8 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl hover:-translate-y-0.5 flex items-center gap-2 transition-all disabled:opacity-70 disabled:hover:translate-y-0"
           >
             <Save className="w-5 h-5" />
-            {loading ? 'Saving Category...' : 'Save Category'}
+            {loading ? (id ? 'Updating Category...' : 'Saving Category...') : (id ? 'Update Category' : 'Save Category')}
           </button>
         </div>
       </form>

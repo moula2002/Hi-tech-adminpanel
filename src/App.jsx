@@ -19,8 +19,10 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="properties" element={<PropertiesAdmin />} />
           <Route path="properties/add" element={<AddProperty />} />
+          <Route path="properties/edit/:id" element={<AddProperty />} />
           <Route path="categories" element={<CategoriesAdmin />} />
           <Route path="categories/add" element={<AddCategory />} />
+          <Route path="categories/edit/:id" element={<AddCategory />} />
           <Route path="enquiries" element={<Enquiries />} />
           <Route path="settings" element={<SettingsAdmin />} />
           {/* Add more routes here as needed (agents, settings) */}
