@@ -49,7 +49,7 @@ const AdminLogin = () => {
       <div className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl p-8 relative z-10">
         <div className="text-center mb-10">
           <div className="mx-auto flex items-center justify-center mb-6">
-            <img src={logo} alt="Hi-Tech Estates Logo" className="h-20 w-auto object-contain" />
+            <img src={logo} alt="Hi-Tech Estates Logo" className="h-24 w-auto object-contain" />
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
           <p className="text-slate-400">Sign in to the Hi-Tech Admin Panel</p>

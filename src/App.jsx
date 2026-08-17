@@ -9,6 +9,7 @@ import AdminLogin from './pages/AdminLogin';
 import CategoriesAdmin from './pages/CategoriesAdmin';
 import AddCategory from './pages/AddCategory';
 import SettingsAdmin from './pages/SettingsAdmin';
+import BannersAdmin from './pages/BannersAdmin';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="categories" element={<CategoriesAdmin />} />
           <Route path="categories/add" element={<AddCategory />} />
           <Route path="categories/edit/:id" element={<AddCategory />} />
+          <Route path="banners" element={<BannersAdmin />} />
           <Route path="enquiries" element={<Enquiries />} />
           <Route path="settings" element={<SettingsAdmin />} />
           {/* Add more routes here as needed (agents, settings) */}

@@ -1,15 +1,15 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Building2, Users, Settings, LogOut, MessageSquare, Tags, X } from 'lucide-react';
+import { LayoutDashboard, Building2, Users, Settings, LogOut, MessageSquare, Tags, X, Image as ImageIcon } from 'lucide-react';
 import logo from '../../assets/logo.png';
 
 const Sidebar = ({ onClose }) => {
   const navItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-    { icon: Building2, label: 'Properties', path: '/properties' },
+    { icon: ImageIcon, label: 'Banners', path: '/banners' },
     { icon: Tags, label: 'Categories', path: '/categories' },
+    { icon: Building2, label: 'Properties', path: '/properties' },
     { icon: MessageSquare, label: 'Enquiries', path: '/enquiries', badge: '1' },
-    { icon: Users, label: 'Agents', path: '/agents' },
     { icon: Settings, label: 'Settings', path: '/settings' },
   ];
 
@@ -18,7 +18,7 @@ const Sidebar = ({ onClose }) => {
       <div className="p-6 flex items-center justify-between relative">
         <div className="flex items-center gap-4">
           <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-slate-800 to-transparent"></div>
-          <img src={logo} alt="Hi-Tech Estates" className="h-16 sm:h-20 w-auto object-contain drop-shadow-lg rounded-lg" />
+          <img src={logo} alt="Hi-Tech Estates" className="h-20 sm:h-24 w-auto object-contain drop-shadow-lg rounded-lg" />
         </div>
         {onClose && (
           <button onClick={onClose} className="lg:hidden p-1 text-slate-400 hover:text-white transition-colors">
