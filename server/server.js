@@ -120,7 +120,7 @@ app.get('/api/properties', async (req, res) => {
   }
 });
 
-app.post('/api/properties', upload.fields([{ name: 'featuredImage', maxCount: 1 }, { name: 'galleryImages', maxCount: 10 }]), async (req, res) => {
+app.post('/api/properties', upload.fields([{ name: 'featuredImage', maxCount: 1 }, { name: 'galleryImages', maxCount: 5 }]), async (req, res) => {
   try {
     let propertyData = {};
     if (req.body.data) {
@@ -153,9 +153,31 @@ app.post('/api/properties', upload.fields([{ name: 'featuredImage', maxCount: 1 
   }
 });
 
-app.put('/api/properties/:id', async (req, res) => {
+app.put('/api/properties/:id', upload.fields([{ name: 'featuredImage', maxCount: 1 }, { name: 'galleryImages', maxCount: 5 }]), async (req, res) => {
   try {
-    const updated = await Property.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    let propertyData = {};
+    if (req.body.data) {
+      propertyData = JSON.parse(req.body.data);
+    } else {
+      propertyData = req.body;
+    }
+
+    if (!propertyData.images) {
+      propertyData.images = {};
+    }
+
+    if (req.files && req.files['featuredImage']) {
+      propertyData.images.featured = 'https://hi-techserver-zd1d.onrender.com/uploads/' + req.files['featuredImage'][0].filename;
+    }
+    
+    if (req.files && req.files['galleryImages']) {
+      const galleryUrls = req.files['galleryImages'].map(f => 'https://hi-techserver-zd1d.onrender.com/uploads/' + f.filename);
+      propertyData.images.gallery = propertyData.images.gallery && propertyData.images.gallery.length > 0
+          ? [...propertyData.images.gallery, ...galleryUrls]
+          : galleryUrls;
+    }
+
+    const updated = await Property.findByIdAndUpdate(req.params.id, propertyData, { new: true });
     if (!updated) return res.status(404).json({ message: 'Property not found' });
     res.json({ ...updated._doc, id: updated._id.toString() });
   } catch (err) {
