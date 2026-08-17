@@ -14,7 +14,7 @@ const BannersAdmin = () => {
 
   const fetchBanners = async () => {
     try {
-      const res = await fetch('https://hi-techserver.onrender.com/api/banners');
+      const res = await fetch('https://hi-techserver-zd1d.onrender.com/api/banners');
       const data = await res.json();
       setBanners(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -39,7 +39,7 @@ const BannersAdmin = () => {
     formData.append('image', imageFile);
 
     try {
-      const res = await fetch('https://hi-techserver.onrender.com/api/banners', {
+      const res = await fetch('https://hi-techserver-zd1d.onrender.com/api/banners', {
         method: 'POST',
         body: formData,
       });
@@ -61,7 +61,7 @@ const BannersAdmin = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this banner?')) return;
     try {
-      const res = await fetch(`https://hi-techserver.onrender.com/api/banners/${id}`, {
+      const res = await fetch(`https://hi-techserver-zd1d.onrender.com/api/banners/${id}`, {
         method: 'DELETE',
       });
       if (res.ok) {

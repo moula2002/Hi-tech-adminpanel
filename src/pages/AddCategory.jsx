@@ -25,7 +25,7 @@ const AddCategory = () => {
   useEffect(() => {
     if (id) {
       setLoading(true);
-      fetch(`https://hi-techserver.onrender.com/api/categories/${id}`)
+      fetch(`https://hi-techserver-zd1d.onrender.com/api/categories/${id}`)
         .then(res => res.json())
         .then(data => {
           setFormData({
@@ -84,7 +84,7 @@ const AddCategory = () => {
       if (formData.image) formDataToSend.append('image', formData.image);
       if (formData.icon) formDataToSend.append('icon', formData.icon);
 
-      const url = id ? `https://hi-techserver.onrender.com/api/categories/${id}` : 'https://hi-techserver.onrender.com/api/categories';
+      const url = id ? `https://hi-techserver-zd1d.onrender.com/api/categories/${id}` : 'https://hi-techserver-zd1d.onrender.com/api/categories';
       const method = id ? 'PUT' : 'POST';
       const res = await fetch(url, {
         method: method,

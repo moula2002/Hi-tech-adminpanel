@@ -17,7 +17,7 @@ const AdminLogin = () => {
     setErrorMsg('');
     
     try {
-      const response = await fetch('https://hi-techserver.onrender.com/api/admin/login', {
+      const response = await fetch('https://hi-techserver-zd1d.onrender.com/api/admin/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

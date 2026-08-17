@@ -7,7 +7,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch('https://hi-techserver.onrender.com/api/dashboard/stats');
+        const res = await fetch('https://hi-techserver-zd1d.onrender.com/api/dashboard/stats');
         if (!res.ok) {
           throw new Error(`Server returned ${res.status}`);
         }

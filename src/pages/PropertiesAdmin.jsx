@@ -10,7 +10,7 @@ const PropertiesAdmin = () => {
 
   const fetchProperties = async () => {
     try {
-      const res = await fetch('https://hi-techserver.onrender.com/api/properties');
+      const res = await fetch('https://hi-techserver-zd1d.onrender.com/api/properties');
       if (!res.ok) {
         throw new Error(`Server returned ${res.status}`);
       }
@@ -33,7 +33,7 @@ const PropertiesAdmin = () => {
 
   const toggleFeatured = async (prop) => {
     try {
-      const res = await fetch(`https://hi-techserver.onrender.com/api/properties/${prop.id}`, {
+      const res = await fetch(`https://hi-techserver-zd1d.onrender.com/api/properties/${prop.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ highlights: { ...prop.highlights, featuredProperty: !prop.highlights?.featuredProperty } })
@@ -46,7 +46,7 @@ const PropertiesAdmin = () => {
 
   const updateStatus = async (id, newStatus) => {
     try {
-      const res = await fetch(`https://hi-techserver.onrender.com/api/properties/${id}`, {
+      const res = await fetch(`https://hi-techserver-zd1d.onrender.com/api/properties/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus })
@@ -64,7 +64,7 @@ const PropertiesAdmin = () => {
 
   const saveEdit = async (id) => {
     try {
-      const res = await fetch(`https://hi-techserver.onrender.com/api/properties/${id}`, {
+      const res = await fetch(`https://hi-techserver-zd1d.onrender.com/api/properties/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ "pricing.price": editPrice })
@@ -81,7 +81,7 @@ const PropertiesAdmin = () => {
   const deleteProperty = async (id) => {
     if (!window.confirm('Are you sure you want to delete this property?')) return;
     try {
-      const res = await fetch(`https://hi-techserver.onrender.com/api/properties/${id}`, { method: 'DELETE' });
+      const res = await fetch(`https://hi-techserver-zd1d.onrender.com/api/properties/${id}`, { method: 'DELETE' });
       if (res.ok) fetchProperties();
     } catch (err) {
       console.error(err);
