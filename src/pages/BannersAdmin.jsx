@@ -5,8 +5,9 @@ const BannersAdmin = () => {
   const [banners, setBanners] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
-  const [imageFile, setImageFile] = useState(null);
+  const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [fileType, setFileType] = useState(null);
 
   useEffect(() => {
     fetchBanners();
@@ -25,18 +26,23 @@ const BannersAdmin = () => {
   };
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      setPreview(URL.createObjectURL(file));
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setPreview(URL.createObjectURL(selectedFile));
+      setFileType(selectedFile.type.startsWith('video/') ? 'video' : 'image');
     }
   };
 
   const handleUpload = async () => {
-    if (!imageFile) return;
+    if (!file) return;
     setUploading(true);
     const formData = new FormData();
-    formData.append('image', imageFile);
+    if (fileType === 'video') {
+      formData.append('video', file);
+    } else {
+      formData.append('image', file);
+    }
 
     try {
       const res = await fetch('https://hi-techserver-zd1d.onrender.com/api/banners', {
@@ -44,8 +50,9 @@ const BannersAdmin = () => {
         body: formData,
       });
       if (res.ok) {
-        setImageFile(null);
+        setFile(null);
         setPreview(null);
+        setFileType(null);
         fetchBanners();
       } else {
         alert('Failed to upload banner');
@@ -101,14 +108,18 @@ const BannersAdmin = () => {
                 <ImageIcon className="w-8 h-8 text-slate-400 mb-2" />
                 <p className="text-sm text-slate-500"><span className="font-semibold">Click to upload</span></p>
               </div>
-              <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} />
+              <input type="file" className="hidden" accept="image/*,video/*" onChange={handleFileChange} />
             </label>
           </div>
           {preview && (
             <div className="relative w-full md:w-1/3 h-32 rounded-lg overflow-hidden border border-slate-200">
-              <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+              {fileType === 'video' ? (
+                <video src={preview} className="w-full h-full object-cover" autoPlay loop muted playsInline />
+              ) : (
+                <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+              )}
               <button 
-                onClick={() => { setImageFile(null); setPreview(null); }}
+                onClick={() => { setFile(null); setPreview(null); setFileType(null); }}
                 className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600"
               >
                 <Trash2 size={16} />
@@ -119,7 +130,7 @@ const BannersAdmin = () => {
         <div className="mt-4 flex justify-end">
           <button
             onClick={handleUpload}
-            disabled={!imageFile || uploading}
+            disabled={!file || uploading}
             className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
           >
             {uploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
@@ -132,7 +143,11 @@ const BannersAdmin = () => {
         {banners.map((banner) => (
           <div key={banner.id} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden group">
             <div className="relative h-48">
-              <img src={banner.image} alt="Banner" className="w-full h-full object-cover" />
+              {banner.video ? (
+                <video src={banner.video} className="w-full h-full object-cover" autoPlay loop muted playsInline />
+              ) : (
+                <img src={banner.image} alt="Banner" className="w-full h-full object-cover" />
+              )}
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <button
                   onClick={() => handleDelete(banner.id)}
