@@ -301,7 +301,34 @@ app.post('/api/categories', upload.fields([{ name: 'image', maxCount: 1 }, { nam
     res.status(201).json({ ...newCategory._doc, id: newCategory._id.toString() });
   } catch (err) {
     console.error(err);
-    res.status(400).json({ message: 'Category validation failed or name must be unique' });
+    res.status(400).json({ message: err.message || 'Category validation failed or name must be unique' });
+  }
+});
+
+app.put('/api/categories/:id', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'icon', maxCount: 1 }]), async (req, res) => {
+  try {
+    const categoryData = { ...req.body };
+
+    if (typeof categoryData.seo === 'string') {
+      try { categoryData.seo = JSON.parse(categoryData.seo); } catch (e) {}
+    }
+
+    if (categoryData.showOnHome !== undefined) categoryData.showOnHome = categoryData.showOnHome === 'true';
+    if (categoryData.featured !== undefined) categoryData.featured = categoryData.featured === 'true';
+
+    if (req.files && req.files['image']) {
+      categoryData.image = 'https://hi-techserver-zd1d.onrender.com/uploads/' + req.files['image'][0].filename;
+    }
+    if (req.files && req.files['icon']) {
+      categoryData.icon = 'https://hi-techserver-zd1d.onrender.com/uploads/' + req.files['icon'][0].filename;
+    }
+
+    const updated = await Category.findByIdAndUpdate(req.params.id, categoryData, { new: true });
+    if (!updated) return res.status(404).json({ message: 'Category not found' });
+    res.json({ ...updated._doc, id: updated._id.toString() });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ message: err.message });
   }
 });
 
