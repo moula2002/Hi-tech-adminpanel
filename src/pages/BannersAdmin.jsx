@@ -15,7 +15,7 @@ const BannersAdmin = () => {
 
   const fetchBanners = async () => {
     try {
-      const res = await fetch('https://hi-techserver-zd1d.onrender.com/api/banners');
+      const res = await fetch('https://hi-techserver-zd1d.onrender.com/api/banners', { cache: 'no-store' });
       const data = await res.json();
       setBanners(Array.isArray(data) ? data : []);
     } catch (err) {
