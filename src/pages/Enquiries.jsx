@@ -4,6 +4,15 @@ import { Search, Mail, Phone, MoreVertical, Archive, Check } from 'lucide-react'
 const Enquiries = () => {
   const [enquiries, setEnquiries] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+
+  const filteredEnquiries = enquiries.filter(enquiry => {
+    const matchesSearch = (enquiry.name && enquiry.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                          (enquiry.email && enquiry.email.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesStatus = statusFilter === 'all' || enquiry.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   const fetchEnquiries = async () => {
     try {
@@ -65,22 +74,35 @@ const Enquiries = () => {
             <input 
               type="text" 
               placeholder="Search by name or email..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-11 pr-4 py-2.5 bg-white/80 border border-slate-200/60 rounded-xl text-sm focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 w-full sm:w-72 shadow-sm transition-all"
             />
           </div>
-          <div className="text-sm text-slate-600 bg-white/60 px-4 py-2 rounded-xl shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] border border-white">
-            <span className="font-bold text-blue-600">{enquiries.filter(e => e.status === 'unread').length} Unread</span>
+          <div className="flex items-center gap-3">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-4 py-2.5 bg-white/80 border border-slate-200/60 rounded-xl text-sm focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 shadow-sm transition-all"
+            >
+              <option value="all">All</option>
+              <option value="unread">Unread</option>
+              <option value="read">Read</option>
+            </select>
+            <div className="text-sm text-slate-600 bg-white/60 px-4 py-2.5 rounded-xl shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)] border border-white">
+              <span className="font-bold text-blue-600">{enquiries.filter(e => e.status === 'unread').length} Unread</span>
+            </div>
           </div>
         </div>
         
         <div className="divide-y divide-white/50">
           {loading ? (
             <div className="p-8 text-center text-slate-500">Loading enquiries...</div>
-          ) : enquiries.length === 0 ? (
+          ) : filteredEnquiries.length === 0 ? (
             <div className="p-8 text-center text-slate-500">
               No enquiries found.
             </div>
-          ) : enquiries.map((enquiry) => (
+          ) : filteredEnquiries.map((enquiry) => (
             <div key={enquiry.id} className={`p-6 flex flex-col md:flex-row gap-6 transition-all duration-300 hover:bg-white/60 ${enquiry.status === 'unread' ? 'bg-blue-50/40 border-l-4 border-blue-500' : 'border-l-4 border-transparent'}`}>
               <div className="flex-1 space-y-3">
                 <div className="flex items-center gap-3">
