@@ -10,6 +10,7 @@ const Admin = require('./models/Admin');
 const Property = require('./models/Property');
 const Enquiry = require('./models/Enquiry');
 const Category = require('./models/Category');
+const Banner = require('./models/Banner');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -314,6 +315,53 @@ app.delete('/api/categories/:id', async (req, res) => {
   }
 });
 
+// BANNERS API
+app.get('/api/banners', async (req, res) => {
+  try {
+    const banners = await Banner.find().sort({ createdAt: -1 });
+    const mapped = banners.map(b => ({
+      ...b._doc,
+      id: b._id.toString()
+    }));
+    res.json(mapped);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post('/api/banners', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'video', maxCount: 1 }]), async (req, res) => {
+  try {
+    const bannerData = {};
+    if (req.files && req.files['image']) {
+      bannerData.image = 'https://hi-techserver-zd1d.onrender.com/uploads/' + req.files['image'][0].filename;
+    }
+    if (req.files && req.files['video']) {
+      bannerData.video = 'https://hi-techserver-zd1d.onrender.com/uploads/' + req.files['video'][0].filename;
+    }
+
+    if (!bannerData.image && !bannerData.video) {
+      return res.status(400).json({ message: 'Please upload an image or a video' });
+    }
+
+    const newBanner = new Banner(bannerData);
+    await newBanner.save();
+    res.status(201).json({ ...newBanner._doc, id: newBanner._id.toString() });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ message: err.message });
+  }
+});
+
+app.delete('/api/banners/:id', async (req, res) => {
+  try {
+    const deleted = await Banner.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ message: 'Banner not found' });
+    res.json({ message: 'Deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // DASHBOARD STATS API
 app.get('/api/dashboard/stats', async (req, res) => {
   try {
@@ -334,9 +382,6 @@ app.get('/api/dashboard/stats', async (req, res) => {
 });
 
 // Start Server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
