@@ -198,13 +198,37 @@ app.delete('/api/properties/:id', async (req, res) => {
 // ENQUIRIES API
 app.get('/api/enquiries', async (req, res) => {
   try {
-    const enquiries = await Enquiry.find().sort({ createdAt: -1 });
+    const enquiries = await Enquiry.find().populate('propertyId', 'title slug').sort({ createdAt: -1 });
     const mapped = enquiries.map(e => ({
       ...e._doc,
       id: e._id.toString(),
       date: new Date(e.createdAt).toLocaleDateString() // formatting date
     }));
     res.json(mapped);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post('/api/enquiries', async (req, res) => {
+  try {
+    const { name, email, phone, message, propertyId } = req.body;
+    
+    // Basic validation
+    if (!name || !email || !message) {
+      return res.status(400).json({ message: 'Name, email, and message are required' });
+    }
+
+    const newEnquiry = new Enquiry({
+      name,
+      email,
+      phone,
+      message,
+      propertyId: propertyId || undefined
+    });
+
+    await newEnquiry.save();
+    res.status(201).json({ message: 'Enquiry submitted successfully', enquiry: newEnquiry });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

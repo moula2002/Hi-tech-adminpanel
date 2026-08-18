@@ -124,6 +124,11 @@ const Enquiries = () => {
                     <Phone className="w-4 h-4" />
                     {enquiry.phone || 'N/A'}
                   </div>
+                  {enquiry.propertyId && enquiry.propertyId.title && (
+                    <div className="flex items-center gap-1.5 text-indigo-600 font-medium bg-indigo-50 px-2 py-0.5 rounded">
+                      Property: {enquiry.propertyId.title}
+                    </div>
+                  )}
                 </div>
 
                 <p className="text-sm text-slate-700 bg-white/80 border border-white p-5 rounded-2xl shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
