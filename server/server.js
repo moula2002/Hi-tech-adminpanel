@@ -16,8 +16,8 @@ const PORT = process.env.PORT || 5000;
 
 // Setup Uploads Directory
 const uploadsDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)){
-    fs.mkdirSync(uploadsDir);
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir);
 }
 
 // Multer Storage Configuration
@@ -41,7 +41,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // serve u
 mongoose.connect(process.env.MONGO_URI, { family: 4 })
   .then(async () => {
     console.log('Successfully connected to MongoDB Atlas!');
-    
+
     // Seed default admin
     const adminCount = await Admin.countDocuments();
     if (adminCount === 0) {
@@ -91,13 +91,13 @@ app.put('/api/admin/profile', async (req, res) => {
   try {
     const admin = await Admin.findOne();
     if (!admin) return res.status(404).json({ message: 'Admin not found' });
-    
+
     // Update fields
     if (req.body.name) admin.name = req.body.name;
     if (req.body.email) admin.email = req.body.email;
     if (req.body.phone) admin.phone = req.body.phone;
     if (req.body.password) admin.password = req.body.password; // In real app, hash this!
-    
+
     await admin.save();
     res.json({ message: 'Profile updated successfully', admin: { name: admin.name, email: admin.email, phone: admin.phone } });
   } catch (err) {
@@ -137,7 +137,7 @@ app.post('/api/properties', upload.fields([{ name: 'featuredImage', maxCount: 1 
     if (req.files && req.files['featuredImage']) {
       propertyData.images.featured = 'https://hi-techserver-zd1d.onrender.com/uploads/' + req.files['featuredImage'][0].filename;
     }
-    
+
     // Assign gallery images
     if (req.files && req.files['galleryImages']) {
       const galleryUrls = req.files['galleryImages'].map(f => 'https://hi-techserver-zd1d.onrender.com/uploads/' + f.filename);
@@ -169,12 +169,12 @@ app.put('/api/properties/:id', upload.fields([{ name: 'featuredImage', maxCount:
     if (req.files && req.files['featuredImage']) {
       propertyData.images.featured = 'https://hi-techserver-zd1d.onrender.com/uploads/' + req.files['featuredImage'][0].filename;
     }
-    
+
     if (req.files && req.files['galleryImages']) {
       const galleryUrls = req.files['galleryImages'].map(f => 'https://hi-techserver-zd1d.onrender.com/uploads/' + f.filename);
       propertyData.images.gallery = propertyData.images.gallery && propertyData.images.gallery.length > 0
-          ? [...propertyData.images.gallery, ...galleryUrls]
-          : galleryUrls;
+        ? [...propertyData.images.gallery, ...galleryUrls]
+        : galleryUrls;
     }
 
     const updated = await Property.findByIdAndUpdate(req.params.id, propertyData, { new: true });
@@ -212,8 +212,8 @@ app.get('/api/enquiries', async (req, res) => {
 
 app.post('/api/enquiries', async (req, res) => {
   try {
-    const { name, email, phone, message, propertyId } = req.body;
-    
+    const { name, email, phone, message, propertyId, interestedIn, formSource } = req.body;
+
     // Basic validation
     if (!name || !email || !message) {
       return res.status(400).json({ message: 'Name, email, and message are required' });
@@ -224,6 +224,8 @@ app.post('/api/enquiries', async (req, res) => {
       email,
       phone,
       message,
+      interestedIn,
+      formSource,
       propertyId: propertyId || undefined
     });
 
@@ -271,7 +273,7 @@ app.get('/api/categories', async (req, res) => {
 app.post('/api/categories', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'icon', maxCount: 1 }]), async (req, res) => {
   try {
     const categoryData = { ...req.body };
-    
+
     // Parse SEO object if sent as string from formData
     if (typeof categoryData.seo === 'string') {
       try {
@@ -280,7 +282,7 @@ app.post('/api/categories', upload.fields([{ name: 'image', maxCount: 1 }, { nam
         // ignore
       }
     }
-    
+
     // Handle booleans from formData string
     categoryData.showOnHome = categoryData.showOnHome === 'true';
     categoryData.featured = categoryData.featured === 'true';
@@ -332,6 +334,9 @@ app.get('/api/dashboard/stats', async (req, res) => {
 });
 
 // Start Server
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

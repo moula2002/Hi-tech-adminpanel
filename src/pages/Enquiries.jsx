@@ -9,7 +9,7 @@ const Enquiries = () => {
 
   const filteredEnquiries = enquiries.filter(enquiry => {
     const matchesSearch = (enquiry.name && enquiry.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-                          (enquiry.email && enquiry.email.toLowerCase().includes(searchTerm.toLowerCase()));
+      (enquiry.email && enquiry.email.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesStatus = statusFilter === 'all' || enquiry.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -71,9 +71,9 @@ const Enquiries = () => {
         <div className="p-6 border-b border-white/50 bg-white/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="relative">
             <Search className="w-5 h-5 text-slate-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
-            <input 
-              type="text" 
-              placeholder="Search by name or email..." 
+            <input
+              type="text"
+              placeholder="Search by name or email..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-11 pr-4 py-2.5 bg-white/80 border border-slate-200/60 rounded-xl text-sm focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 w-full sm:w-72 shadow-sm transition-all"
@@ -94,7 +94,7 @@ const Enquiries = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="divide-y divide-white/50">
           {loading ? (
             <div className="p-8 text-center text-slate-500">Loading enquiries...</div>
@@ -114,7 +114,7 @@ const Enquiries = () => {
                   )}
                   <span className="text-xs font-medium text-slate-400 ml-auto md:hidden">{enquiry.date}</span>
                 </div>
-                
+
                 <div className="flex flex-wrap gap-4 text-sm text-slate-500">
                   <div className="flex items-center gap-1.5 hover:text-blue-600 cursor-pointer transition-colors">
                     <Mail className="w-4 h-4" />
@@ -129,6 +129,16 @@ const Enquiries = () => {
                       Property: {enquiry.propertyId.title}
                     </div>
                   )}
+                  {enquiry.interestedIn && (
+                    <div className="flex items-center gap-1.5 text-emerald-600 font-medium bg-emerald-50 px-2 py-0.5 rounded">
+                      Interested In: {enquiry.interestedIn}
+                    </div>
+                  )}
+                  {enquiry.formSource && (
+                    <div className="flex items-center gap-1.5 text-purple-600 font-medium bg-purple-50 px-2 py-0.5 rounded">
+                      Source: {enquiry.formSource}
+                    </div>
+                  )}
                 </div>
 
                 <p className="text-sm text-slate-700 bg-white/80 border border-white p-5 rounded-2xl shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
@@ -140,7 +150,7 @@ const Enquiries = () => {
                 <span className="text-xs text-slate-400 hidden md:block whitespace-nowrap">{enquiry.date}</span>
                 <div className="flex items-center gap-2">
                   {enquiry.status === 'unread' && (
-                    <button 
+                    <button
                       onClick={() => markAsRead(enquiry.id)}
                       className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors tooltip tooltip-left"
                       title="Mark as read"
@@ -148,7 +158,7 @@ const Enquiries = () => {
                       <Check className="w-5 h-5" />
                     </button>
                   )}
-                  <button 
+                  <button
                     onClick={() => archiveMessage(enquiry.id)}
                     className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                     title="Archive"

@@ -14,6 +14,8 @@ const enquirySchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  interestedIn: String,
+  formSource: String,
   status: {
     type: String, // 'unread', 'read'
     default: 'unread'
