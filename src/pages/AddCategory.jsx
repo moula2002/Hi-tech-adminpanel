@@ -25,21 +25,26 @@ const AddCategory = () => {
   useEffect(() => {
     if (id) {
       setLoading(true);
-      fetch(`https://hi-techserver-zd1d.onrender.com/api/categories/${id}`)
+      fetch(`https://hi-techserver-zd1d.onrender.com/api/categories`)
         .then(res => res.json())
         .then(data => {
-          setFormData({
-            name: data.name || '',
-            slug: data.slug || '',
-            image: null,
-            icon: null,
-            description: data.description || '',
-            shortDescription: data.shortDescription || '',
-            showOnHome: data.showOnHome || false,
-            featured: data.featured || false,
-            seo: data.seo || { metaTitle: '', metaDescription: '' }
-          });
-          setSlugEdited(true);
+          const category = data.find(c => c.id === id);
+          if (category) {
+            setFormData({
+              name: category.name || '',
+              slug: category.slug || '',
+              image: null,
+              icon: null,
+              description: category.description || '',
+              shortDescription: category.shortDescription || '',
+              showOnHome: category.showOnHome || false,
+              featured: category.featured || false,
+              seo: category.seo || { metaTitle: '', metaDescription: '' }
+            });
+            setSlugEdited(true);
+          } else {
+            setErrorMsg('Category not found.');
+          }
           setLoading(false);
         })
         .catch(err => {
