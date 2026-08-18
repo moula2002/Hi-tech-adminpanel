@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Home, Users, DollarSign, TrendingUp } from 'lucide-react';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+
+const revenueData = [
+  { name: 'Jan', revenue: 4000 },
+  { name: 'Feb', revenue: 3000 },
+  { name: 'Mar', revenue: 5000 },
+  { name: 'Apr', revenue: 4500 },
+  { name: 'May', revenue: 6000 },
+  { name: 'Jun', revenue: 5500 },
+  { name: 'Jul', revenue: 7000 },
+];
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
@@ -61,8 +72,25 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 bg-white/70 backdrop-blur-xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white p-8 min-h-[400px]">
           <h2 className="text-lg font-bold text-slate-800 mb-4">Revenue Chart</h2>
-          <div className="w-full h-64 border-2 border-dashed border-slate-100 rounded-xl flex items-center justify-center bg-slate-50">
-            <p className="text-slate-400">Database Connection Active!</p>
+          <div className="w-full h-72">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={revenueData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <XAxis dataKey="name" stroke="#cbd5e1" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#cbd5e1" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                  itemStyle={{ color: '#0f172a', fontWeight: 'bold' }}
+                />
+                <Area type="monotone" dataKey="revenue" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
         </div>
         
