@@ -11,4 +11,7 @@ export default defineConfig({
   optimizeDeps: {
     include: ['recharts'],
   },
+  server: {
+    port: 5174,
+  }
 })

@@ -7,6 +7,7 @@ const AddProperty = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [existingImages, setExistingImages] = useState({ featured: null, gallery: [] });
 
   const AMENITIES_LIST = [
     'Swimming Pool', 'Gym', 'Lift', 'Security', 'CCTV', 'Power Backup',
@@ -26,7 +27,7 @@ const AddProperty = () => {
     images: { featured: null, gallery: [], videoUrl: '' },
     description: { short: '', full: '' },
     highlights: { readyToMove: false, newLaunch: false, premiumProperty: false, featuredProperty: false, hotProperty: false },
-    agent: { name: '', mobile: '', email: '' },
+    
     seo: { metaTitle: '', metaDescription: '', metaKeywords: '' }
   });
 
@@ -39,6 +40,10 @@ const AddProperty = () => {
       fetch(`http://localhost:5000/api/properties/${id}`)
         .then(res => res.json())
         .then(data => {
+          setExistingImages({
+            featured: data.images?.featured || null,
+            gallery: data.images?.gallery || []
+          });
           setFormData({
             title: data.title || '',
             slug: data.slug || '',
@@ -52,7 +57,7 @@ const AddProperty = () => {
             images: { featured: null, gallery: [], videoUrl: data.images?.videoUrl || '' },
             description: data.description || { short: '', full: '' },
             highlights: data.highlights || { readyToMove: false, newLaunch: false, premiumProperty: false, featuredProperty: false, hotProperty: false },
-            agent: data.agent || { name: '', mobile: '', email: '' },
+            
             seo: data.seo || { metaTitle: '', metaDescription: '', metaKeywords: '' }
           });
           setSlugEdited(true);
@@ -123,7 +128,7 @@ const AddProperty = () => {
       const formDataToSend = new FormData();
       
       const { images, ...dataWithoutImages } = formData;
-      formDataToSend.append('data', JSON.stringify({ ...dataWithoutImages, images: { videoUrl: images.videoUrl } }));
+      formDataToSend.append('data', JSON.stringify({ ...dataWithoutImages, images: { videoUrl: images.videoUrl, featured: existingImages.featured, gallery: existingImages.gallery } }));
       
       if (images.featured) {
         formDataToSend.append('featuredImage', images.featured);
@@ -351,6 +356,16 @@ const AddProperty = () => {
           <div className="space-y-6">
             <div className="space-y-2">
               <label className="text-sm font-semibold text-slate-700">Featured Image (Upload) {id ? '(Optional - Leave empty to keep existing)' : '*'}</label>
+              {existingImages.featured && (
+                <div className="mb-4 relative w-32 h-32 rounded-xl overflow-hidden border border-slate-200 shadow-sm group">
+                  <img src={existingImages.featured} alt="Featured" className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <button type="button" onClick={() => setExistingImages(prev => ({ ...prev, featured: null }))} className="bg-red-500 text-white px-3 py-1 rounded-full hover:bg-red-600 transition-colors">
+                      <span className="text-xs font-bold">Remove</span>
+                    </button>
+                  </div>
+                </div>
+              )}
               <input type="file" accept="image/*" onChange={(e) => handleNestedChange('images', 'featured', e.target.files[0])} className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
             </div>
             <div className="space-y-2">
@@ -418,31 +433,10 @@ const AddProperty = () => {
           </div>
         </section>
 
-        {/* 9. Agent Details */}
+        {/* 9. SEO (Optional) */}
         <section className="bg-white/70 backdrop-blur-xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white p-8">
           <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2 border-b border-slate-100 pb-4">
-            <Users className="text-blue-500 w-6 h-6" /> 9. Agent Details
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700">Agent Name</label>
-              <input type="text" value={formData.agent.name} onChange={(e) => handleNestedChange('agent', 'name', e.target.value)} className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 transition-all" />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700">Mobile Number</label>
-              <input type="text" value={formData.agent.mobile} onChange={(e) => handleNestedChange('agent', 'mobile', e.target.value)} className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 transition-all" />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700">Email</label>
-              <input type="email" value={formData.agent.email} onChange={(e) => handleNestedChange('agent', 'email', e.target.value)} className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 transition-all" />
-            </div>
-          </div>
-        </section>
-
-        {/* 10. SEO (Optional) */}
-        <section className="bg-white/70 backdrop-blur-xl rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white p-8">
-          <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2 border-b border-slate-100 pb-4">
-            <Search className="text-blue-500 w-6 h-6" /> 10. SEO (Optional)
+            <Search className="text-blue-500 w-6 h-6" /> 9. SEO (Optional)
           </h2>
           <div className="space-y-6">
             <div className="space-y-2">
