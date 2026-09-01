@@ -25,7 +25,7 @@ const AddCategory = () => {
   useEffect(() => {
     if (id) {
       setLoading(true);
-      fetch(`https://hi-techserver-zd1d.onrender.com/api/categories`)
+      fetch(`http://localhost:5000/api/categories`)
         .then(res => res.json())
         .then(data => {
           const category = data.find(c => c.id === id);
@@ -89,7 +89,7 @@ const AddCategory = () => {
       if (formData.image) formDataToSend.append('image', formData.image);
       if (formData.icon) formDataToSend.append('icon', formData.icon);
 
-      const url = id ? `https://hi-techserver-zd1d.onrender.com/api/categories/${id}` : 'https://hi-techserver-zd1d.onrender.com/api/categories';
+      const url = id ? `http://localhost:5000/api/categories/${id}` : 'http://localhost:5000/api/categories';
       const method = id ? 'PUT' : 'POST';
       const res = await fetch(url, {
         method: method,

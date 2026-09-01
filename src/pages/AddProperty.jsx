@@ -36,7 +36,7 @@ const AddProperty = () => {
   useEffect(() => {
     if (id) {
       setLoading(true);
-      fetch(`https://hi-techserver-zd1d.onrender.com/api/properties/${id}`)
+      fetch(`http://localhost:5000/api/properties/${id}`)
         .then(res => res.json())
         .then(data => {
           setFormData({
@@ -135,7 +135,7 @@ const AddProperty = () => {
         });
       }
 
-      const url = id ? `https://hi-techserver-zd1d.onrender.com/api/properties/${id}` : 'https://hi-techserver-zd1d.onrender.com/api/properties';
+      const url = id ? `http://localhost:5000/api/properties/${id}` : 'http://localhost:5000/api/properties';
       const method = id ? 'PUT' : 'POST';
       const res = await fetch(url, {
         method: method,

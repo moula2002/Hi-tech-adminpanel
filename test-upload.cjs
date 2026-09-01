@@ -15,7 +15,7 @@ data += 'fake image content\r\n';
 
 data += '--' + boundary + '--\r\n';
 
-fetch('https://hi-techserver-zd1d.onrender.com/api/categories', {
+fetch('http://localhost:5000/api/categories', {
   method: 'POST',
   headers: {
     'Content-Type': 'multipart/form-data; boundary=' + boundary
