@@ -16,7 +16,7 @@ const Enquiries = () => {
 
   const fetchEnquiries = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/enquiries');
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/api/enquiries`);
       if (!res.ok) throw new Error(`Server returned ${res.status}`);
       const data = await res.json();
       if (Array.isArray(data)) {
@@ -37,7 +37,7 @@ const Enquiries = () => {
 
   const markAsRead = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/enquiries/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/api/enquiries/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: 'read' })
@@ -51,7 +51,7 @@ const Enquiries = () => {
   const archiveMessage = async (id) => {
     if (!window.confirm('Are you sure you want to archive/delete this enquiry?')) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/enquiries/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/api/enquiries/${id}`, { method: 'DELETE' });
       if (res.ok) fetchEnquiries();
     } catch (err) {
       console.error(err);
