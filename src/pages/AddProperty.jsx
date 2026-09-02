@@ -202,7 +202,14 @@ const AddProperty = () => {
             </div>
             <div className="space-y-2">
               <label className="text-sm font-semibold text-slate-700">Property Type *</label>
-              <input type="text" value={formData.type} onChange={(e) => setFormData({...formData, type: e.target.value})} placeholder="e.g. Villa, Apartment" className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 transition-all" />
+              <select value={formData.type} onChange={(e) => setFormData({...formData, type: e.target.value})} className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 transition-all">
+                <option value="">Select Property Type</option>
+                <option value="Apartment">Apartment</option>
+                <option value="Villa">Villa</option>
+                <option value="Commercial">Commercial</option>
+                <option value="Plots/Land">Plots/Land</option>
+                <option value="Independent House">Independent House</option>
+              </select>
             </div>
             <div className="space-y-2">
               <label className="text-sm font-semibold text-slate-700">Property Purpose *</label>
