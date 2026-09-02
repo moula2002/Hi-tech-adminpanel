@@ -8,7 +8,7 @@ const CategoriesAdmin = () => {
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/api/categories`);
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/categories`);
       if (!res.ok) throw new Error(`Server returned ${res.status}`);
       const data = await res.json();
       if (Array.isArray(data)) {
@@ -30,7 +30,7 @@ const CategoriesAdmin = () => {
   const deleteCategory = async (id) => {
     if (!window.confirm('Are you sure you want to delete this category?')) return;
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/api/categories/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/categories/${id}`, { method: 'DELETE' });
       if (res.ok) fetchCategories();
     } catch (err) {
       console.error(err);
@@ -39,7 +39,7 @@ const CategoriesAdmin = () => {
 
   const toggleStatus = async (id, field, currentValue) => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/api/categories/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/categories/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ [field]: !currentValue })

@@ -37,7 +37,7 @@ const AddProperty = () => {
   useEffect(() => {
     if (id) {
       setLoading(true);
-      fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/api/properties/${id}`)
+      fetch(`${import.meta.env.VITE_API_BASE_URL}/api/properties/${id}`)
         .then(res => res.json())
         .then(data => {
           setExistingImages({
@@ -140,7 +140,7 @@ const AddProperty = () => {
         });
       }
 
-      const url = id ? `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/api/properties/${id}` : `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/api/properties`;
+      const url = id ? `${import.meta.env.VITE_API_BASE_URL}/api/properties/${id}` : `${import.meta.env.VITE_API_BASE_URL}/api/properties`;
       const method = id ? 'PUT' : 'POST';
       const res = await fetch(url, {
         method: method,

@@ -19,7 +19,7 @@ const SettingsAdmin = () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/api/admin/profile`);
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/profile`);
       if (res.ok) {
         const data = await res.json();
         setProfile({
@@ -44,7 +44,7 @@ const SettingsAdmin = () => {
       const updateData = { ...profile };
       if (!updateData.password) delete updateData.password; // Only update if typed
 
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/api/admin/profile`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/admin/profile`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updateData)

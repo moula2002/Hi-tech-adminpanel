@@ -18,7 +18,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/api/dashboard/stats`);
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/dashboard/stats`);
         if (!res.ok) {
           throw new Error(`Server returned ${res.status}`);
         }
