@@ -17,6 +17,7 @@ const AddProperty = () => {
   const [formData, setFormData] = useState({
     title: '',
     slug: '',
+    category: 'Residential',
     type: '',
     purpose: 'Sale',
     status: 'Available',
@@ -199,6 +200,14 @@ const AddProperty = () => {
             <div className="space-y-2 col-span-1 md:col-span-2">
               <label className="text-sm font-semibold text-slate-700">Property Slug (Auto Generated)</label>
               <input type="text" value={formData.slug} onChange={(e) => { setFormData({...formData, slug: e.target.value}); setSlugEdited(true); }} className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 transition-all text-slate-500" />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-slate-700">Category *</label>
+              <select value={formData.category} onChange={(e) => setFormData({...formData, category: e.target.value})} className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 transition-all">
+                <option value="Residential">Residential</option>
+                <option value="Commercial">Commercial</option>
+                <option value="Plots/Land">Plots/Land</option>
+              </select>
             </div>
             <div className="space-y-2">
               <label className="text-sm font-semibold text-slate-700">Property Type *</label>
