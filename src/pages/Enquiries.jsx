@@ -141,9 +141,15 @@ const Enquiries = () => {
                   )}
                 </div>
 
-                <p className="text-sm text-slate-700 bg-white/80 border border-white p-5 rounded-2xl shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
-                  "{enquiry.message}"
-                </p>
+                <div className="bg-slate-50 border border-slate-200 p-5 rounded-xl shadow-sm"><p className="text-base text-black font-bold whitespace-pre-wrap leading-relaxed">{enquiry.message}</p></div>
+                {enquiry.image && (
+                  <div className="mt-4">
+                    <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Attached Image</p>
+                    <a href={enquiry.image} target="_blank" rel="noreferrer" className="block max-w-xs rounded-xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+                      <img src={enquiry.image} alt="Enquiry Attachment" className="w-full h-auto object-cover" />
+                    </a>
+                  </div>
+                )}
               </div>
 
               <div className="flex md:flex-col items-center justify-between md:justify-start gap-3 md:pl-6 md:border-l md:border-slate-100">
@@ -176,3 +182,9 @@ const Enquiries = () => {
 };
 
 export default Enquiries;
+
+
+
+
+
+
