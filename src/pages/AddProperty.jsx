@@ -157,13 +157,24 @@ const AddProperty = () => {
       if (res.ok) {
         navigate('/properties');
       } else {
-        const err = await res.json();
-        setErrorMsg(err.message || 'Failed to save property');
+        const text = await res.text();
+        let errorMessage = 'Failed to save property';
+        try {
+          const err = JSON.parse(text);
+          errorMessage = err.message || errorMessage;
+        } catch (e) {
+          if (text.includes('502') || text.includes('500') || text.includes('DOCTYPE')) {
+            errorMessage = 'Server error. The property data might be too large, or the server is still deploying.';
+          } else {
+            errorMessage = text;
+          }
+        }
+        setErrorMsg(errorMessage);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     } catch (err) {
       console.error(err);
-      setErrorMsg('Server connection failed.');
+      setErrorMsg('Server connection failed. The upload might be too large or your network dropped.');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } finally {
       setLoading(false);
