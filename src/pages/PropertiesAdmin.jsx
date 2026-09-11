@@ -150,7 +150,15 @@ const PropertiesAdmin = () => {
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0 border border-slate-200">
                           {prop.images?.featured ? (
-                            <img src={prop.images.featured} alt={prop.title} className="w-full h-full object-cover" />
+                            <img 
+                              src={prop.images.featured} 
+                              alt={prop.title} 
+                              className="w-full h-full object-cover" 
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2075&q=80";
+                              }}
+                            />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center text-slate-400 text-[10px]">No img</div>
                           )}

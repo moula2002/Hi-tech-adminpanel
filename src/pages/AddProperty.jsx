@@ -117,6 +117,7 @@ const AddProperty = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.title || !formData.type || !formData.purpose || !formData.status || !formData.pricing.price || !formData.location.state || !formData.location.city || !formData.location.area || !formData.location.fullAddress || !formData.description.short || !formData.description.full || (!id && !formData.images.featured)) {
+      alert('Please fill out all required (*) fields. Check the top of the form for details.');
       setErrorMsg('Please fill out all required (*) fields.');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
