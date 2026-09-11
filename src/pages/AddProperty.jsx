@@ -48,6 +48,7 @@ const AddProperty = () => {
           setFormData({
             title: data.title || '',
             slug: data.slug || '',
+            category: data.category || 'Residential',
             type: data.type || '',
             purpose: data.purpose || 'Sale',
             status: data.status || 'Available',
