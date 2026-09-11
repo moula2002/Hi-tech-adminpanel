@@ -386,11 +386,26 @@ const AddProperty = () => {
                   </div>
                 </div>
               )}
-              <input type="file" accept="image/*" onChange={(e) => handleNestedChange('images', 'featured', e.target.files[0])} className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+              <input type="file" accept="image/*" onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (file && file.size > 2 * 1024 * 1024) {
+                    alert("Featured image size must be less than 2MB.");
+                    e.target.value = '';
+                    return;
+                  }
+                  handleNestedChange('images', 'featured', file);
+                }} className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-semibold text-slate-700">Gallery Images (Max 5 Images)</label>
               <input type="file" multiple accept="image/*" onChange={(e) => {
+                const filesArray = Array.from(e.target.files);
+                const hasLargeFile = filesArray.some(f => f.size > 1 * 1024 * 1024);
+                if (hasLargeFile) {
+                  alert('Each gallery image must be less than 1MB.');
+                  e.target.value = '';
+                  return;
+                }
                 if (e.target.files.length > 5) {
                   alert('You can only upload a maximum of 5 gallery images.');
                   e.target.value = '';
@@ -402,7 +417,7 @@ const AddProperty = () => {
             </div>
             <div className="space-y-2">
               <label className="text-sm font-semibold text-slate-700">Property Video Upload (Optional, Max 5MB)</label>
-              <input type="file" accept="video/*" onChange={(e) => {
+              <input type="file" accept="video/mp4,video/webm,video/ogg" onChange={(e) => {
                   const file = e.target.files[0];
                   if (file && file.size > 5 * 1024 * 1024) {
                     alert("Video size must be less than 5MB to fit in database.");
