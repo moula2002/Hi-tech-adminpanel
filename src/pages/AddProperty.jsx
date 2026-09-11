@@ -25,7 +25,7 @@ const AddProperty = () => {
     location: { state: '', city: '', area: '', fullAddress: '', pincode: '', googleMapLink: '' },
     specifications: { totalArea: '', builtUpArea: '', bedrooms: '', bathrooms: '', balconies: '', floors: '', parkingSpaces: '', facing: '' },
     amenities: [],
-    images: { featured: null, gallery: [], videoUrl: '' },
+    images: { featured: null, gallery: [], videoUrl: '', videoFile: null },
     description: { short: '', full: '' },
     highlights: { readyToMove: false, newLaunch: false, premiumProperty: false, featuredProperty: false, hotProperty: false },
     
@@ -55,7 +55,7 @@ const AddProperty = () => {
             location: data.location || { state: '', city: '', area: '', fullAddress: '', pincode: '', googleMapLink: '' },
             specifications: data.specifications || { totalArea: '', builtUpArea: '', bedrooms: '', bathrooms: '', balconies: '', floors: '', parkingSpaces: '', facing: '' },
             amenities: data.amenities || [],
-            images: { featured: null, gallery: [], videoUrl: data.images?.videoUrl || '' },
+            images: { featured: null, gallery: [], videoUrl: data.images?.videoUrl || '', videoFile: null },
             description: data.description || { short: '', full: '' },
             highlights: data.highlights || { readyToMove: false, newLaunch: false, premiumProperty: false, featuredProperty: false, hotProperty: false },
             
@@ -131,6 +131,10 @@ const AddProperty = () => {
       const { images, ...dataWithoutImages } = formData;
       formDataToSend.append('data', JSON.stringify({ ...dataWithoutImages, images: { videoUrl: images.videoUrl, featured: existingImages.featured, gallery: existingImages.gallery } }));
       
+      if (images.videoFile) {
+        formDataToSend.append('propertyVideo', images.videoFile);
+      }
+      
       if (images.featured) {
         formDataToSend.append('featuredImage', images.featured);
       }
@@ -165,7 +169,7 @@ const AddProperty = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto pb-10">
+    <div className="space-y-6 max-w-5xl mx-auto pb-32">
       <div className="flex items-center gap-4">
         <button 
           onClick={() => navigate('/properties')}
@@ -397,8 +401,16 @@ const AddProperty = () => {
               }} className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-700">Property Video URL (Optional)</label>
-              <input type="text" value={formData.images.videoUrl} onChange={(e) => handleNestedChange('images', 'videoUrl', e.target.value)} placeholder="YouTube or Vimeo URL" className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 transition-all" />
+              <label className="text-sm font-semibold text-slate-700">Property Video Upload (Optional, Max 5MB)</label>
+              <input type="file" accept="video/*" onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (file && file.size > 5 * 1024 * 1024) {
+                    alert("Video size must be less than 5MB to fit in database.");
+                    e.target.value = '';
+                    return;
+                  }
+                  handleNestedChange('images', 'videoFile', file);
+                }} className="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
             </div>
           </div>
         </section>
